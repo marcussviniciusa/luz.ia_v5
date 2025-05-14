@@ -1,0 +1,48 @@
+<!-- Login Page -->
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <img src="/images/logo.png" alt="Mente Merecedora">
+        </div>
+        <h2 class="auth-title">Acesso ao Portal</h2>
+        
+        <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+            <div class="messages-container">
+                <% messages.forEach(function(message) { %>
+                    <div class="alert alert-<%= message.type %> alert-dismissible fade show" role="alert">
+                        <%= message.text %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <form id="login-form" action="javascript:void(0);">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="button" id="login-button" class="btn btn-primary btn-lg">Entrar</button>
+            </div>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p>Não tem uma conta? <a href="/register" class="text-primary">Cadastre-se</a></p>
+        </div>
+    </div>
+</div>
+
+<script src="/js/main.js"></script>

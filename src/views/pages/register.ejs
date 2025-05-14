@@ -1,0 +1,221 @@
+<!-- Registration Page -->
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <img src="/images/logo.png" alt="Mente Merecedora">
+        </div>
+        <h2 class="auth-title">Cadastro no Portal</h2>
+        
+        <% if (typeof messages !== 'undefined' && messages.length > 0) { %>
+            <div class="messages-container">
+                <% messages.forEach(function(message) { %>
+                    <div class="alert alert-<%= message.type %> alert-dismissible fade show" role="alert">
+                        <%= message.text %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+        
+        <form action="/api/auth/register" method="POST" id="register-form">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nome Completo</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                </div>
+                <small class="form-text text-muted">A senha deve ter pelo menos 6 caracteres</small>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password2" class="form-label">Confirmar Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="form-control" id="password2" name="password2" required>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                    <label class="form-check-label" for="termsCheck">
+                        Eu aceito os <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Termos de Uso</a> e a <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Política de Privacidade</a>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg">Cadastrar</button>
+            </div>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p>Já tem uma conta? <a href="/login" class="text-primary">Faça login</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">Termos de Uso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>1. Aceitação dos Termos</h5>
+                <p>Ao acessar e utilizar o Portal Mente Merecedora, você concorda com os presentes Termos de Uso. Se você não concorda com estes termos, por favor, não utilize o portal.</p>
+                
+                <h5>2. Descrição do Serviço</h5>
+                <p>O Portal Mente Merecedora é uma plataforma online exclusiva para alunas do curso "Jornada Mente Merecedora", oferecendo ferramentas de autoconhecimento, práticas guiadas e recursos para transformação pessoal.</p>
+                
+                <h5>3. Cadastro e Aprovação</h5>
+                <p>Para utilizar o portal, é necessário realizar cadastro e aguardar aprovação administrativa. Somente alunas do curso poderão ter acesso às funcionalidades completas do portal.</p>
+                
+                <h5>4. Responsabilidades</h5>
+                <p>As usuárias são responsáveis por manter a confidencialidade de suas credenciais de acesso e por todas as atividades realizadas em suas contas.</p>
+                
+                <h5>5. Uso Adequado</h5>
+                <p>A usuária concorda em utilizar o portal de forma ética e legal, respeitando os direitos autorais e de propriedade intelectual da Jornada Mente Merecedora.</p>
+                
+                <h5>6. Limitações de Responsabilidade</h5>
+                <p>O conteúdo e ferramentas disponibilizados no portal não substituem orientação profissional médica, psicológica ou financeira.</p>
+                
+                <h5>7. Alterações nos Termos</h5>
+                <p>Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entrarão em vigor após sua publicação no portal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Política de Privacidade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h5>1. Coleta de Informações</h5>
+                <p>Coletamos informações pessoais como nome, e-mail e dados específicos das atividades realizadas no portal para proporcionar uma experiência personalizada.</p>
+                
+                <h5>2. Uso das Informações</h5>
+                <p>As informações coletadas são utilizadas para personalizar a experiência da usuária, melhorar o portal e facilitar a jornada de desenvolvimento pessoal.</p>
+                
+                <h5>3. Proteção de Dados</h5>
+                <p>Implementamos medidas de segurança para proteger suas informações pessoais e garantir a privacidade dos seus dados.</p>
+                
+                <h5>4. Compartilhamento de Dados</h5>
+                <p>Não compartilhamos suas informações pessoais com terceiros sem seu consentimento, exceto quando exigido por lei.</p>
+                
+                <h5>5. Cookies e Tecnologias Semelhantes</h5>
+                <p>Utilizamos cookies para melhorar a experiência da usuária e coletar dados sobre o uso do portal.</p>
+                
+                <h5>6. Direitos da Usuária</h5>
+                <p>Você tem direito de acessar, corrigir, excluir ou portar seus dados pessoais a qualquer momento.</p>
+                
+                <h5>7. Alterações na Política</h5>
+                <p>Reservamo-nos o direito de modificar esta política a qualquer momento. As alterações entrarão em vigor após sua publicação no portal.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('register-form');
+    
+    registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const password2 = document.getElementById('password2').value;
+        
+        // Validar senhas
+        if (password !== password2) {
+            showAlert('danger', 'As senhas não coincidem');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, password })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.message || 'Erro ao realizar cadastro');
+            }
+            
+            // Mostrar mensagem de sucesso
+            showAlert('success', 'Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar o sistema.');
+            
+            // Limpar formulário
+            registerForm.reset();
+            
+            // Redirecionar para página de login após 3 segundos
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 3000);
+        } catch (error) {
+            showAlert('danger', error.message);
+        }
+    });
+    
+    // Função para mostrar alertas
+    function showAlert(type, message) {
+        const messagesContainer = document.querySelector('.messages-container');
+        
+        if (!messagesContainer) {
+            const newContainer = document.createElement('div');
+            newContainer.className = 'messages-container';
+            registerForm.insertAdjacentElement('beforebegin', newContainer);
+            
+            newContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        } else {
+            messagesContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+    }
+});
+</script>

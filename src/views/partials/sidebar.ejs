@@ -1,0 +1,40 @@
+<div class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <img src="/images/logo.svg" alt="Mente Merecedora Logo">
+        </div>
+        <h3>Portal Mente Merecedora</h3>
+    </div>
+    <div class="sidebar-menu">
+        <ul>
+            <li class="<%= active === 'dashboard' ? 'active' : '' %>">
+                <a href="/dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="<%= active === 'luz_ia' ? 'active' : '' %>">
+                <a href="/luz_ia"><i class="fas fa-robot"></i> LUZ IA</a>
+            </li>
+            <li class="<%= active === 'diary' ? 'active' : '' %>">
+                <a href="/tools/diary"><i class="fas fa-book"></i> Diário Quântico</a>
+            </li>
+            <li class="<%= active === 'manifestation' ? 'active' : '' %>">
+                <a href="/tools/manifestation"><i class="fas fa-star"></i> Ferramentas de Manifestação</a>
+            </li>
+            <li class="<%= active === 'practices' ? 'active' : '' %>">
+                <a href="/practices"><i class="fas fa-spa"></i> Práticas Guiadas</a>
+            </li>
+            <li class="<%= active === 'profile' ? 'active' : '' %>">
+                <a href="/profile"><i class="fas fa-user"></i> Meu Perfil</a>
+            </li>
+            <% if (user && user.role === 'admin') { %>
+                <li class="<%= active === 'admin' ? 'active' : '' %>">
+                    <a href="/admin"><i class="fas fa-cog"></i> Administração</a>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+    <div class="sidebar-footer">
+        <a href="/api/auth/logout" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </a>
+    </div>
+</div>

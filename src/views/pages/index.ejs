@@ -1,0 +1,136 @@
+<!-- Home Page -->
+<div class="home-container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="card welcome-card">
+                <div class="card-body text-center">
+                    <div class="welcome-logo mb-4">
+                        <img src="/images/logo.svg" alt="Mente Merecedora" class="img-fluid" style="max-width: 200px;">
+                    </div>
+                    <h1 class="welcome-title mb-4">Portal Mente Merecedora</h1>
+                    <p class="welcome-subtitle mb-4">Potencialize sua jornada de transformação pessoal através de ferramentas exclusivas de autoconhecimento e práticas guiadas.</p>
+                    
+                    <% if (!user) { %>
+                        <div class="auth-buttons">
+                            <a href="/login" class="btn btn-primary btn-lg me-3">Entrar</a>
+                            <a href="/register" class="btn btn-outline-primary btn-lg">Cadastrar</a>
+                        </div>
+                    <% } else { %>
+                        <a href="/dashboard" class="btn btn-primary btn-lg">Ir para Dashboard</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card features-card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Ferramentas Exclusivas</h2>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot text-primary"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>LUZ IA</h4>
+                            <p>Assistente especializado para responder suas dúvidas, propor reflexões e ajudar em sua evolução pessoal.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-book text-primary"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Diário Quântico</h4>
+                            <p>Ferramenta para registro diário de estado emocional, pensamentos e conquistas, permitindo visualizar sua evolução ao longo do tempo.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-star text-primary"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Ferramentas de Manifestação</h4>
+                            <p>Quadro de visualização digital, checklist e símbolos pessoais para impulsionar a concretização de seus objetivos.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-spa text-primary"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4>Práticas Guiadas</h4>
+                            <p>Biblioteca de meditações e exercícios interativos da metodologia para aprofundar sua jornada de autoconhecimento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .home-container {
+        padding: 50px 20px;
+    }
+    
+    .welcome-card, .features-card {
+        height: 100%;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    
+    .welcome-card {
+        background: linear-gradient(135deg, #fff, var(--light-purple));
+        padding: 40px 20px;
+    }
+    
+    .welcome-title {
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: 2.5rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        color: #555;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .feature-item {
+        display: flex;
+        margin-bottom: 25px;
+    }
+    
+    .feature-icon {
+        min-width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: var(--light-purple);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 1.5rem;
+    }
+    
+    .feature-content h4 {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+    }
+    
+    .feature-content p {
+        margin-bottom: 0;
+        color: #666;
+    }
+    
+    .auth-buttons {
+        margin-top: 20px;
+    }
+</style>

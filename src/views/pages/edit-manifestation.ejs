@@ -1,0 +1,377 @@
+<!-- Define o título da página -->
+<% title = 'Editar Meta' %>
+
+<!-- Adiciona CSS específico -->
+<% if (typeof extraStyles === 'undefined') { extraStyles = ''; } %>
+<% extraStyles += '<link rel="stylesheet" href="/css/manifestation.css">' %>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a href="/tools/manifestation">Ferramentas de Manifestação</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Editar Meta</li>
+        </ol>
+      </nav>
+      <h1 class="page-title">Editar Meta</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Formulário de Edição -->
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="editTabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="details-tab" data-toggle="tab" href="#details" role="tab" aria-controls="details" aria-selected="true">Detalhes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="milestones-tab" data-toggle="tab" href="#milestones" role="tab" aria-controls="milestones" aria-selected="false">Marcos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="visualization-tab" data-toggle="tab" href="#visualization" role="tab" aria-controls="visualization" aria-selected="false">Visualização</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="affirmations-tab" data-toggle="tab" href="#affirmations" role="tab" aria-controls="affirmations" aria-selected="false">Afirmações</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content" id="editTabsContent">
+            <!-- Tab: Detalhes da Meta -->
+            <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+              <form id="editDetailsForm">
+                <input type="hidden" id="goalId" name="goalId" value="<%= goal._id %>">
+                
+                <div class="form-group">
+                  <label for="title">Título da Meta</label>
+                  <input type="text" class="form-control" id="title" name="title" required maxlength="100" value="<%= goal.title %>">
+                </div>
+                
+                <div class="form-group">
+                  <label for="description">Descrição Detalhada</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"><%= goal.description || '' %></textarea>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="category">Categoria</label>
+                    <select class="form-control" id="category" name="category" required>
+                      <% categories.forEach(category => { %>
+                        <option value="<%= category %>" <%= goal.category === category ? 'selected' : '' %>>
+                          <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') %>
+                        </option>
+                      <% }); %>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group col-md-6">
+                    <label for="status">Status</label>
+                    <select class="form-control" id="status" name="status" required>
+                      <% statuses.forEach(status => { %>
+                        <option value="<%= status %>" <%= goal.status === status ? 'selected' : '' %>>
+                          <%= status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ') %>
+                        </option>
+                      <% }); %>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="deadline">Data Alvo</label>
+                    <input type="date" class="form-control" id="deadline" name="deadline" value="<%= goal.deadline ? goal.deadline.toISOString().split('T')[0] : '' %>">
+                  </div>
+                  
+                  <div class="form-group col-md-6">
+                    <label for="progress">Progresso Manual (%)</label>
+                    <input type="number" class="form-control" id="progress" name="progress" min="0" max="100" value="<%= goal.progress %>">
+                    <small class="form-text text-muted">Deixe em branco para calcular automaticamente com base nos marcos.</small>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="pinned" name="pinned" <%= goal.pinned ? 'checked' : '' %>>
+                    <label class="custom-control-label" for="pinned">Fixar esta meta no topo</label>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="reminderFrequency">Frequência de Lembretes</label>
+                  <select class="form-control" id="reminderFrequency" name="reminderFrequency">
+                    <option value="nenhum" <%= goal.reminderFrequency === 'nenhum' ? 'selected' : '' %>>Nenhum</option>
+                    <option value="diario" <%= goal.reminderFrequency === 'diario' ? 'selected' : '' %>>Diário</option>
+                    <option value="semanal" <%= goal.reminderFrequency === 'semanal' ? 'selected' : '' %>>Semanal</option>
+                    <option value="mensal" <%= goal.reminderFrequency === 'mensal' ? 'selected' : '' %>>Mensal</option>
+                  </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+              </form>
+            </div>
+            
+            <!-- Tab: Marcos -->
+            <div class="tab-pane fade" id="milestones" role="tabpanel" aria-labelledby="milestones-tab">
+              <div class="mb-3">
+                <h5>Marcos da Meta</h5>
+                <p class="text-muted small">Divida sua meta em etapas menores e tangíveis.</p>
+              </div>
+              
+              <div id="milestones-list">
+                <% if (goal.milestones && goal.milestones.length > 0) { %>
+                  <div class="list-group mb-3">
+                    <% goal.milestones.forEach((milestone, index) => { %>
+                      <div class="list-group-item milestone-item" data-id="<%= milestone._id %>">
+                        <div class="d-flex align-items-center">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input milestone-checkbox" 
+                                  id="milestone-<%= index %>" 
+                                  <%= milestone.completed ? 'checked' : '' %>>
+                            <label class="custom-control-label <%= milestone.completed ? 'text-muted' : '' %>" 
+                                  for="milestone-<%= index %>">
+                              <%= milestone.title %>
+                            </label>
+                          </div>
+                          <div class="ml-auto">
+                            <% if (milestone.dueDate) { %>
+                              <span class="badge badge-light">
+                                <i class="far fa-calendar-alt"></i> 
+                                <%= new Date(milestone.dueDate).toLocaleDateString('pt-BR') %>
+                              </span>
+                            <% } %>
+                            <button class="btn btn-sm btn-outline-danger delete-milestone ml-2" data-id="<%= milestone._id %>">
+                              <i class="fas fa-trash-alt"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } else { %>
+                  <p class="text-muted">Nenhum marco adicionado ainda.</p>
+                <% } %>
+              </div>
+              
+              <form id="addMilestoneForm" class="mt-4">
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <h6 class="card-title">Adicionar Novo Marco</h6>
+                    <div class="form-row">
+                      <div class="form-group col-md-8">
+                        <input type="text" class="form-control" id="newMilestoneTitle" placeholder="Descrição do marco" required>
+                      </div>
+                      <div class="form-group col-md-4">
+                        <input type="date" class="form-control" id="newMilestoneDueDate" placeholder="Data limite">
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Adicionar Marco</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <!-- Tab: Visualização -->
+            <div class="tab-pane fade" id="visualization" role="tabpanel" aria-labelledby="visualization-tab">
+              <div class="mb-3">
+                <h5>Visualização Criativa</h5>
+                <p class="text-muted small">Descreva detalhadamente como você se sente tendo já alcançado esta meta. Quanto mais detalhes sensoriais e emocionais, mais poderosa a visualização.</p>
+              </div>
+              
+              <form id="visualizationForm">
+                <div class="form-group">
+                  <label for="visualizationNotes">Notas de Visualização</label>
+                  <textarea class="form-control" id="visualizationNotes" name="visualizationNotes" rows="6" maxlength="1000"><%= goal.visualizationNotes || '' %></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label>Imagem de Visualização</label>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="visualizationImage">
+                    <label class="custom-file-label" for="visualizationImage">Escolher arquivo...</label>
+                  </div>
+                  <small class="form-text text-muted">Escolha uma imagem que represente sua meta concretizada. (Em breve)</small>
+                </div>
+                
+                <% if (goal.image) { %>
+                  <div class="mb-3">
+                    <div class="card">
+                      <img src="<%= goal.image %>" class="card-img-top" alt="Imagem de visualização">
+                      <div class="card-body">
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="removeImage">Remover Imagem</button>
+                      </div>
+                    </div>
+                  </div>
+                <% } %>
+                
+                <button type="submit" class="btn btn-primary">Salvar Visualização</button>
+              </form>
+            </div>
+            
+            <!-- Tab: Afirmações -->
+            <div class="tab-pane fade" id="affirmations" role="tabpanel" aria-labelledby="affirmations-tab">
+              <div class="mb-3">
+                <h5>Afirmações Positivas</h5>
+                <p class="text-muted small">Crie afirmações positivas no tempo presente para reforçar sua meta.</p>
+              </div>
+              
+              <div id="affirmations-list" class="mb-4">
+                <% if (goal.affirmations && goal.affirmations.length > 0) { %>
+                  <div class="list-group">
+                    <% goal.affirmations.forEach((affirmation, index) => { %>
+                      <div class="list-group-item d-flex justify-content-between align-items-center affirmation-item" data-id="<%= affirmation._id %>">
+                        <div>
+                          <i class="fas fa-quote-left text-muted mr-2 small"></i>
+                          <%= affirmation.text %>
+                          <i class="fas fa-quote-right text-muted ml-2 small"></i>
+                          
+                          <% if (!affirmation.active) { %>
+                            <span class="badge badge-secondary ml-2">Inativa</span>
+                          <% } %>
+                        </div>
+                        <div>
+                          <button class="btn btn-sm btn-outline-<%= affirmation.active ? 'warning' : 'success' %> toggle-affirmation mr-1" data-id="<%= affirmation._id %>" data-active="<%= affirmation.active %>">
+                            <% if (affirmation.active) { %>
+                              <i class="fas fa-pause"></i>
+                            <% } else { %>
+                              <i class="fas fa-play"></i>
+                            <% } %>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger delete-affirmation" data-id="<%= affirmation._id %>">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } else { %>
+                  <p class="text-muted">Nenhuma afirmação adicionada ainda.</p>
+                <% } %>
+              </div>
+              
+              <form id="addAffirmationForm">
+                <div class="card bg-light">
+                  <div class="card-body">
+                    <h6 class="card-title">Adicionar Nova Afirmação</h6>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="newAffirmationText" placeholder="Ex: Eu já realizei minha meta de..." required>
+                        <div class="input-group-append">
+                          <button type="submit" class="btn btn-primary">Adicionar</button>
+                        </div>
+                      </div>
+                      <small class="form-text text-muted">Use sempre o tempo presente, como se já tivesse realizado a meta.</small>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Informações Laterais -->
+    <div class="col-md-4">
+      <!-- Progresso -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Progresso</h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-3">
+            <div class="progress-circle mx-auto" data-value="<%= goal.progress %>">
+              <span class="progress-circle-left">
+                <span class="progress-circle-bar"></span>
+              </span>
+              <span class="progress-circle-right">
+                <span class="progress-circle-bar"></span>
+              </span>
+              <div class="progress-circle-value">
+                <div>
+                  <span><%= goal.progress %></span>%<br>
+                  <span class="small">Concluído</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <p>
+              <span class="badge badge-<%= goal.status === 'concluida' ? 'success' : goal.status === 'em-progresso' ? 'info' : goal.status === 'pausada' ? 'warning' : 'secondary' %>">
+                <%= goal.status.charAt(0).toUpperCase() + goal.status.slice(1).replace('-', ' ') %>
+              </span>
+            </p>
+            <p class="small text-muted">
+              <i class="fas fa-calendar"></i> Criada em <%= new Date(goal.createdAt).toLocaleDateString('pt-BR') %>
+              <br>
+              <i class="fas fa-clock"></i> Última atualização: <%= new Date(goal.updatedAt).toLocaleDateString('pt-BR') %>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dicas -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Dicas para Sucesso</h5>
+        </div>
+        <div class="card-body">
+          <ul class="small pl-3">
+            <li><strong>Seja específico</strong> - Quanto mais detalhes, mais claro o caminho.</li>
+            <li><strong>Divida em marcos</strong> - Pequenas vitórias mantêm a motivação.</li>
+            <li><strong>Visualize diariamente</strong> - Reserve um momento para sentir a realização.</li>
+            <li><strong>Use afirmações no presente</strong> - Formule como se já fosse realidade.</li>
+            <li><strong>Revise regularmente</strong> - Acompanhe seu progresso e ajuste conforme necessário.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Ações -->
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Ações</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <a href="/tools/manifestation" class="btn btn-outline-secondary btn-block mb-2">
+              <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+            <button id="deleteGoalBtn" class="btn btn-danger btn-block">
+              <i class="fas fa-trash-alt"></i> Excluir Meta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Exclusão</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja excluir esta meta?</p>
+        <p class="text-danger"><strong>Atenção:</strong> Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir Permanentemente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adiciona JavaScript específico -->
+<% if (typeof extraScripts === 'undefined') { extraScripts = ''; } %>
+<% extraScripts += '<script src="/js/edit-manifestation.js"></script>' %>

@@ -1,0 +1,173 @@
+/* Estilos para o chat LUZ IA */
+
+/* Estrutura geral */
+/* Sidebar */
+.sidebar, .col-md-3 .card {
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  overflow-y: auto;
+}
+
+/* Certifica que a área de sidebar ocupa toda a altura disponível */
+.sidebar-conversations, .sidebar-prompts {
+  max-height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section h4 {
+  font-size: 1.1rem;
+  color: #343a40;
+  margin-bottom: 0.75rem;
+}
+
+/* Chat container */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: calc(100vh - 250px);
+}
+
+.chat-title {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+/* Área de mensagens */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+}
+
+/* Estilo das mensagens */
+.message {
+  margin-bottom: 1rem;
+  max-width: 85%;
+  clear: both;
+}
+
+.user-message {
+  float: right;
+}
+
+.ai-message {
+  float: left;
+}
+
+.message-content {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.user-message .message-content {
+  background-color: #007bff;
+  color: white;
+}
+
+.ai-message .message-content {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+.message-header {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.message-text {
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* Formulário de chat */
+.chat-form {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-top: 1px solid #dee2e6;
+}
+
+#messageInput {
+  resize: none;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+#sendMessageBtn {
+  border-radius: 0 0.25rem 0.25rem 0;
+}
+
+/* Indicador de digitação */
+.typing-indicator {
+  opacity: 0.7;
+}
+
+.typing-dots {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 1.5rem;
+}
+
+.typing-dots span {
+  height: 0.5rem;
+  width: 0.5rem;
+  margin: 0 0.125rem;
+  background-color: #6c757d;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0.5);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mensagem de boas-vindas */
+.welcome-message {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  margin: 2rem auto;
+  max-width: 90%;
+}
+
+.welcome-message h4 {
+  color: #007bff;
+  margin-bottom: 1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .sidebar, .chat-container {
+    height: auto;
+    max-height: 70vh;
+  }
+  
+  .message {
+    max-width: 95%;
+  }
+}

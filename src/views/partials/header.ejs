@@ -1,0 +1,23 @@
+<header class="app-header">
+    <div class="header-left">
+        <button id="sidebar-toggle" class="sidebar-toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title"><%= typeof title !== 'undefined' ? title : 'Portal Mente Merecedora' %></h1>
+    </div>
+    <div class="header-right">
+        <div class="user-profile dropdown">
+            <button class="btn dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="<%= user.photo.startsWith('http') ? user.photo : `/api/media/avatars/${user.photo}` %>" 
+                    alt="<%= user.name %>" class="user-avatar">
+                <span class="user-name"><%= user.name %></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> Meu Perfil</a></li>
+                <li><a class="dropdown-item" href="/profile/settings"><i class="fas fa-cog"></i> Configurações</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+            </ul>
+        </div>
+    </div>
+</header>

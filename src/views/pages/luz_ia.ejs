@@ -1,0 +1,141 @@
+<!-- Adiciona arquivo CSS específico para o chat LUZ IA -->
+<% if (typeof extraStyles === 'undefined') { extraStyles = ''; } %>
+<% extraStyles += '<link rel="stylesheet" href="/css/luz_ia.css">' %>
+
+<!-- Define o título da página -->
+<% title = 'Chat LUZ IA' %>
+
+<div class="container mt-4">
+  <div class="row">
+      <!-- Sidebar com prompts e conversas -->
+      <div class="col-md-3 mb-4">
+        <!-- Prompts -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Prompts Sugeridos</h5>
+          </div>
+          <div class="card-body sidebar-prompts">
+            <% if (typeof promptsByCategory !== 'undefined' && Object.keys(promptsByCategory).length > 0) { %>
+              <% Object.keys(promptsByCategory).forEach(function(category) { %>
+                <div class="mb-3">
+                  <h6 class="text-uppercase"><%= category %></h6>
+                  <div class="list-group">
+                    <% promptsByCategory[category].forEach(function(prompt) { %>
+                      <a href="/luz_ia?prompt=<%= prompt._id %>" 
+                        class="list-group-item list-group-item-action <%= selectedPrompt === prompt._id.toString() ? 'active' : '' %>">
+                        <%= prompt.title %>
+                      </a>
+                    <% }); %>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <p class="text-muted">Nenhum prompt disponível</p>
+            <% } %>
+          </div>
+        </div>
+        
+        <!-- Conversas -->
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Minhas Conversas</h5>
+          </div>
+          <div class="card-body sidebar-conversations">
+            <div class="list-group">
+              <% if (typeof conversations !== 'undefined' && conversations.length > 0) { %>
+                <% conversations.forEach(function(conv) { %>
+                  <div class="list-group-item <%= conversationId === conv._id.toString() ? 'active' : '' %>">
+                    <div class="d-flex w-100 justify-content-between mb-2">
+                      <h6 class="mb-0"><%= conv.title || 'Conversa' %></h6>
+                      <small class="text-muted"><%= new Date(conv.lastMessageAt || conv.createdAt).toLocaleDateString('pt-BR') %></small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <a href="/luz_ia/conversations/<%= conv._id %>" class="btn btn-sm btn-outline-primary">Abrir</a>
+                      <button class="btn btn-sm btn-outline-danger delete-conversation" data-id="<%= conv._id %>">Excluir</button>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <p class="text-muted small mt-3">Você ainda não iniciou nenhuma conversa com LUZ IA.</p>
+              <% } %>
+            </div>
+            <div class="mt-3">
+              <a href="/luz_ia" class="btn btn-sm btn-primary">Nova Conversa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Chat principal -->
+      <div class="col-md-9">
+        <div class="card chat-container">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <% if (typeof conversation !== 'undefined' && conversation) { %>
+                <%= conversation.title || 'Conversa com LUZ IA' %>
+              <% } else { %>
+                Nova Conversa com LUZ IA
+              <% } %>
+            </h5>
+          </div>
+          <div class="card-body chat-messages" id="chatMessages">
+            <% if (typeof conversation !== 'undefined' && 
+                   conversation && 
+                   conversation.messages && 
+                   conversation.messages.length > 0) { %>
+              <% conversation.messages.forEach(function(msg) { %>
+                <div class="message <%= msg.role === 'user' ? 'user-message' : 'ai-message' %>">
+                  <div class="message-content">
+                    <div class="message-header">
+                      <strong><%= msg.role === 'user' ? 'Você' : 'LUZ IA' %></strong>
+                    </div>
+                    <div class="message-text">
+                      <%= msg.content %>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="welcome-message text-center">
+                <img src="/img/luz-ia-logo.svg" alt="LUZ IA" class="mb-3" style="max-width: 120px;" />
+                <h4>Bem-vinda à LUZ IA</h4>
+                <p>Sua assistente de transformação pessoal da Jornada Mente Merecedora.</p>
+                <p class="small text-muted">
+                  Faça perguntas sobre sua jornada de autoconhecimento, peça insights sobre desafios
+                  que está enfrentando, ou solicite orientações sobre as práticas do curso.
+                </p>
+                <p class="small text-muted">
+                  Você também pode selecionar um dos prompts sugeridos no menu lateral para começar.
+                </p>
+              </div>
+            <% } %>
+          </div>
+          
+          <!-- Formulário de mensagem -->
+          <div class="card-footer">
+            <form id="chatForm" class="chat-form">
+              <input type="hidden" id="conversationIdInput" value="<%= typeof conversation !== 'undefined' && conversation ? conversation._id : '' %>">
+              
+              <div class="input-group">
+                <textarea 
+                  id="messageInput" 
+                  class="form-control" 
+                  placeholder="Digite sua mensagem..."
+                  rows="2"
+                  required
+                ></textarea>
+                <button id="sendMessageBtn" type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i> Enviar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adiciona o script específico para o chat LUZ IA -->
+<% if (typeof extraScripts === 'undefined') { extraScripts = ''; } %>
+<% extraScripts += '<script src="/js/luz-chat.js"></script>' %>

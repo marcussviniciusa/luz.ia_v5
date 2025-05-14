@@ -1,0 +1,338 @@
+<!-- Define o título da página -->
+<% title = 'Ferramentas de Manifestação' %>
+
+<!-- Adiciona CSS específico -->
+<% if (typeof extraStyles === 'undefined') { extraStyles = ''; } %>
+<% extraStyles += '<link rel="stylesheet" href="/css/manifestation.css">' %>
+
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="page-title mb-3">Ferramentas de Manifestação</h1>
+      <p class="lead">
+        Visualize, planeje e manifeste seus desejos e metas através do poder da intenção consciente
+        e da Lei da Atração.
+      </p>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 bg-primary text-white">
+        <div class="card-body text-center">
+          <h2 class="display-4"><%= stats.total || 0 %></h2>
+          <p class="card-text">Total de Metas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 bg-success text-white">
+        <div class="card-body text-center">
+          <h2 class="display-4"><%= stats.completed || 0 %></h2>
+          <p class="card-text">Metas Concluídas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 bg-info text-white">
+        <div class="card-body text-center">
+          <h2 class="display-4"><%= stats.inProgress || 0 %></h2>
+          <p class="card-text">Em Progresso</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card h-100 bg-secondary text-white">
+        <div class="card-body text-center">
+          <h2 class="display-4"><%= stats.avgProgress || 0 %>%</h2>
+          <p class="card-text">Progresso Médio</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#novaMetaModal">
+        <i class="fas fa-plus-circle"></i> Nova Meta
+      </button>
+      <div class="btn-group ml-2">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-filter"></i> Filtrar
+        </button>
+        <div class="dropdown-menu">
+          <h6 class="dropdown-header">Categoria</h6>
+          <% categories.forEach(category => { %>
+            <a class="dropdown-item" href="/tools/manifestation?category=<%= category %>">
+              <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') %>
+            </a>
+          <% }); %>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Status</h6>
+          <a class="dropdown-item" href="/tools/manifestation?status=planejada">Planejada</a>
+          <a class="dropdown-item" href="/tools/manifestation?status=em-progresso">Em Progresso</a>
+          <a class="dropdown-item" href="/tools/manifestation?status=concluida">Concluída</a>
+          <a class="dropdown-item" href="/tools/manifestation?status=pausada">Pausada</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/tools/manifestation">Limpar Filtros</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metas Fixadas -->
+  <% if (pinnedGoals && pinnedGoals.length > 0) { %>
+    <div class="row mb-4">
+      <div class="col-12">
+        <h3 class="section-title">
+          <i class="fas fa-thumbtack"></i> Metas Fixadas
+        </h3>
+        <div class="row">
+          <% pinnedGoals.forEach(goal => { %>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span class="badge badge-<%= goal.status === 'concluida' ? 'success' : goal.status === 'em-progresso' ? 'info' : goal.status === 'pausada' ? 'warning' : 'primary' %>">
+                    <%= goal.status.charAt(0).toUpperCase() + goal.status.slice(1).replace('-', ' ') %>
+                  </span>
+                  <div>
+                    <button class="btn btn-sm btn-light toggle-pin" data-id="<%= goal._id %>" title="Desafixar">
+                      <i class="fas fa-thumbtack text-primary"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title"><%= goal.title %></h5>
+                  <p class="card-text small text-muted">
+                    <i class="fas fa-tag"></i> <%= goal.category.charAt(0).toUpperCase() + goal.category.slice(1).replace('-', ' ') %>
+                  </p>
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: <%= goal.progress %>%" aria-valuenow="<%= goal.progress %>" aria-valuemin="0" aria-valuemax="100"><%= goal.progress %>%</div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                  <small class="text-muted">Atualizado em <%= new Date(goal.updatedAt).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'}) %></small>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-primary view-goal" data-id="<%= goal._id %>">Visualizar</a>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <!-- Metas Recentes -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <h3 class="section-title">
+        <% if (recentGoals && recentGoals.length > 0) { %>
+          <i class="fas fa-clock"></i> Metas Recentes
+        <% } else if (stats.total === 0) { %>
+          <i class="fas fa-info-circle"></i> Comece a Jornada
+        <% } %>
+      </h3>
+      
+      <% if (recentGoals && recentGoals.length > 0) { %>
+        <div class="row">
+          <% recentGoals.forEach(goal => { %>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <span class="badge badge-<%= goal.status === 'concluida' ? 'success' : goal.status === 'em-progresso' ? 'info' : goal.status === 'pausada' ? 'warning' : 'primary' %>">
+                    <%= goal.status.charAt(0).toUpperCase() + goal.status.slice(1).replace('-', ' ') %>
+                  </span>
+                  <div>
+                    <button class="btn btn-sm btn-light toggle-pin" data-id="<%= goal._id %>" title="Fixar">
+                      <i class="fas fa-thumbtack text-secondary"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title"><%= goal.title %></h5>
+                  <p class="card-text small text-muted">
+                    <i class="fas fa-tag"></i> <%= goal.category.charAt(0).toUpperCase() + goal.category.slice(1).replace('-', ' ') %>
+                  </p>
+                  <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: <%= goal.progress %>%" aria-valuenow="<%= goal.progress %>" aria-valuemin="0" aria-valuemax="100"><%= goal.progress %>%</div>
+                  </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                  <small class="text-muted">Atualizado em <%= new Date(goal.updatedAt).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'}) %></small>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-primary view-goal" data-id="<%= goal._id %>">Visualizar</a>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else if (stats.total === 0) { %>
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <div class="card text-center">
+              <div class="card-body py-5">
+                <img src="/img/goal-icon.svg" alt="Metas" style="max-width: 120px; margin-bottom: 20px;">
+                <h4>Comece sua jornada de manifestação</h4>
+                <p class="text-muted">
+                  Utilize as Ferramentas de Manifestação para visualizar, planejar e concretizar seus desejos.
+                  Crie sua primeira meta para começar.
+                </p>
+                <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#novaMetaModal">
+                  <i class="fas fa-plus-circle"></i> Criar Primeira Meta
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <% if (categoryCounts && categoryCounts.length > 0) { %>
+    <!-- Distribuição por Categoria -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Distribuição por Categoria</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <% categoryCounts.forEach(cat => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <%= cat._id.charAt(0).toUpperCase() + cat._id.slice(1).replace('-', ' ') %>
+                  <span class="badge badge-primary badge-pill"><%= cat.count %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Dicas -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0">Dicas para Manifestação</h5>
+          </div>
+          <div class="card-body">
+            <ol class="pl-3">
+              <li><strong>Visualize com detalhes</strong> - Quanto mais vívida a visualização, mais poderosa a manifestação.</li>
+              <li><strong>Sinta como se já tivesse acontecido</strong> - O sentimento atrai a realidade.</li>
+              <li><strong>Pratique gratidão diariamente</strong> - A gratidão eleva sua vibração.</li>
+              <li><strong>Reveja suas metas regularmente</strong> - A revisão constante mantém o foco e a energia.</li>
+              <li><strong>Defina passos concretos</strong> - Divida suas metas em marcos menores e tangíveis.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<!-- Modal de Nova Meta -->
+<div class="modal fade" id="novaMetaModal" tabindex="-1" role="dialog" aria-labelledby="novaMetaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="novaMetaModalLabel">Nova Meta de Manifestação</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="novaMetaForm">
+          <div class="form-group">
+            <label for="title">Título da Meta</label>
+            <input type="text" class="form-control" id="title" name="title" required maxlength="100" placeholder="Ex: Comprar casa própria">
+          </div>
+          
+          <div class="form-group">
+            <label for="description">Descrição Detalhada</label>
+            <textarea class="form-control" id="description" name="description" rows="3" maxlength="500" placeholder="Descreva os detalhes da sua meta..."></textarea>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="category">Categoria</label>
+              <select class="form-control" id="category" name="category" required>
+                <option value="" selected disabled>Selecione uma categoria</option>
+                <option value="financeiro">Financeiro</option>
+                <option value="carreira">Carreira</option>
+                <option value="relacionamentos">Relacionamentos</option>
+                <option value="saude">Saúde</option>
+                <option value="espiritualidade">Espiritualidade</option>
+                <option value="desenvolvimento-pessoal">Desenvolvimento Pessoal</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+            
+            <div class="form-group col-md-6">
+              <label for="deadline">Data Alvo (opcional)</label>
+              <input type="date" class="form-control" id="deadline" name="deadline" placeholder="dd/mm/aaaa" pattern="\d{2}/\d{2}/\d{4}">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="visualizationNotes">Notas de Visualização</label>
+            <textarea class="form-control" id="visualizationNotes" name="visualizationNotes" rows="3" maxlength="1000" placeholder="Como você se sente ao alcançar essa meta? Quais detalhes você visualiza?"></textarea>
+            <small class="form-text text-muted">Use essas notas para descrever como você se sente tendo já alcançado essa meta. Visualize detalhes sensoriais (o que você vê, ouve, sente).</small>
+          </div>
+          
+          <div class="form-group">
+            <label>Marcos Iniciais</label>
+            <div id="milestones-container">
+              <div class="milestone-item input-group mb-2">
+                <input type="text" class="form-control" name="milestones[0][title]" placeholder="Descreva um marco para sua meta">
+                <div class="input-group-append">
+                  <input type="date" class="form-control" name="milestones[0][dueDate]">
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="addMilestone">+ Adicionar Outro Marco</button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="saveGoalBtn">Salvar Meta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Detalhes da Meta -->
+<div class="modal fade" id="detalhesMetaModal" tabindex="-1" role="dialog" aria-labelledby="detalhesMetaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detalhesMetaModalLabel">Detalhes da Meta</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="goalDetails">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Carregando...</span>
+            </div>
+            <p class="mt-2">Carregando detalhes...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="deleteGoalBtn"><i class="fas fa-trash"></i> Excluir</button>
+        <div class="ml-auto">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-primary" id="editGoalBtn">Editar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Adiciona JavaScript específico -->
+<% if (typeof extraScripts === 'undefined') { extraScripts = ''; } %>
+<% extraScripts += '<script src="/js/goals-manager.js"></script>' %>

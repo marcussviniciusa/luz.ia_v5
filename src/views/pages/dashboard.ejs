@@ -1,0 +1,360 @@
+<!-- Dashboard Page -->
+<div class="dashboard-container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-banner card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h2>Bem-vinda, <%= user.name %>!</h2>
+                            <p class="welcome-message">Que bom ter você por aqui. Continue sua jornada de autoconhecimento e transformação utilizando as ferramentas disponíveis.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="welcome-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-book"></i>
+                    <h2><%= stats.diaryCount %></h2>
+                    <p>Entradas no Diário</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-star"></i>
+                    <h2><%= stats.manifestationCount %></h2>
+                    <p>Quadros de Manifestação</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-comments"></i>
+                    <h2><%= stats.conversationCount %></h2>
+                    <p>Conversas com LUZ IA</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h2><%= stats.daysRegistered %></h2>
+                    <p>Dias de Jornada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card quick-links-card">
+                <div class="card-body">
+                    <h3 class="card-title">Acesso Rápido</h3>
+                    <div class="quick-links">
+                        <a href="/luz-ia" class="quick-link-item">
+                            <div class="quick-link-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="quick-link-content">
+                                <h4>LUZ IA</h4>
+                                <p>Converse com a assistente especializada</p>
+                            </div>
+                        </a>
+                        <a href="/tools/diary/new" class="quick-link-item">
+                            <div class="quick-link-icon">
+                                <i class="fas fa-pen"></i>
+                            </div>
+                            <div class="quick-link-content">
+                                <h4>Nova Entrada Diário</h4>
+                                <p>Registre seu progresso diário</p>
+                            </div>
+                        </a>
+                        <a href="/practices" class="quick-link-item">
+                            <div class="quick-link-icon">
+                                <i class="fas fa-spa"></i>
+                            </div>
+                            <div class="quick-link-content">
+                                <h4>Práticas Guiadas</h4>
+                                <p>Meditações e exercícios</p>
+                            </div>
+                        </a>
+                        <a href="/tools/manifestation/new" class="quick-link-item">
+                            <div class="quick-link-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div class="quick-link-content">
+                                <h4>Novo Quadro</h4>
+                                <p>Crie um novo quadro de manifestação</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card daily-reflection-card">
+                <div class="card-body">
+                    <h3 class="card-title">Reflexão do Dia</h3>
+                    <div class="daily-quote">
+                        <blockquote>
+                            <%= inspirationalQuote.text %>
+                        </blockquote>
+                        <footer>— <%= inspirationalQuote.author %></footer>
+                    </div>
+
+                    <div class="reflection-prompt mt-4">
+                        <h5>Pergunta para Reflexão:</h5>
+                        <p><%= inspirationalQuote.reflectionPrompt %></p>
+                        <a href="/luz-ia?prompt=<%= encodeURIComponent(inspirationalQuote.reflectionPrompt) %>" class="btn btn-outline-primary mt-2">
+                            <i class="fas fa-robot me-2"></i> Refletir com LUZ IA
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card recent-activity-card">
+                <div class="card-body">
+                    <h3 class="card-title">Atividades Recentes</h3>
+                    
+                    <% if (recentActivities && recentActivities.length > 0) { %>
+                        <div class="timeline">
+                            <% recentActivities.forEach(activity => { %>
+                                <div class="timeline-item">
+                                    <div class="timeline-dot">
+                                        <i class="<%= activity.icon %>"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <h5><%= activity.title %></h5>
+                                            <span class="timeline-date"><%= formatDate(activity.date) %></span>
+                                        </div>
+                                        <div class="timeline-body">
+                                            <p><%= activity.description %></p>
+                                        </div>
+                                        <% if (activity.link) { %>
+                                            <div class="timeline-footer">
+                                                <a href="<%= activity.link.url %>" class="btn btn-sm btn-outline-primary">
+                                                    <%= activity.link.text %>
+                                                </a>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <p>Ainda não há atividades registradas. Comece a utilizar as ferramentas do portal!</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .welcome-banner {
+        background: linear-gradient(135deg, var(--light-purple), white);
+        border-left: 5px solid var(--primary-color);
+    }
+
+    .welcome-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        opacity: 0.5;
+    }
+
+    .quick-links {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .quick-link-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: var(--light-purple);
+        color: var(--dark-color);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    .quick-link-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        background-color: #e9d8ff;
+    }
+
+    .quick-link-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+    }
+
+    .quick-link-content h4 {
+        font-size: 1rem;
+        margin: 0 0 5px;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .quick-link-content p {
+        font-size: 0.8rem;
+        margin: 0;
+        color: #666;
+    }
+
+    .daily-quote {
+        background-color: var(--light-purple);
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .daily-quote blockquote {
+        font-size: 1.1rem;
+        font-style: italic;
+        margin: 0 0 10px;
+        color: var(--primary-color);
+    }
+
+    .daily-quote footer {
+        text-align: right;
+        font-weight: 600;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline:before {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--light-purple);
+    }
+
+    .timeline-item {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -30px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        font-size: 0.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    .timeline-header h5 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .timeline-date {
+        font-size: 0.8rem;
+        color: #777;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 30px;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        color: #ddd;
+        margin-bottom: 15px;
+    }
+
+    @media (max-width: 768px) {
+        .quick-links {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Format date helper function for client-side
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = now - date;
+        
+        // Less than a day
+        if (diff < 86400000) {
+            const hours = Math.floor(diff / 3600000);
+            
+            if (hours < 1) {
+                const minutes = Math.floor(diff / 60000);
+                return minutes < 1 ? 'Agora mesmo' : `Há ${minutes} minutos`;
+            }
+            
+            return `Há ${hours} horas`;
+        }
+        
+        // Less than a week
+        if (diff < 604800000) {
+            const days = Math.floor(diff / 86400000);
+            return `Há ${days} dias`;
+        }
+        
+        // Format as date
+        return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    }
+</script>
